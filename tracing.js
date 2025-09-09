@@ -1,17 +1,13 @@
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
-const { ConsoleSpanExporter } = require('@opentelemetry/exporter-console');
+const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-base');
 const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
-const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 
 // Configure the SDK to export telemetry data to the console
 // In production, you would typically export to a proper observability backend
 const sdk = new NodeSDK({
-  resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: 'otel-http-server',
-    [SemanticResourceAttributes.SERVICE_VERSION]: '1.0.0',
-  }),
+  serviceName: 'otel-http-server',
+  serviceVersion: '1.0.0',
   traceExporter: new ConsoleSpanExporter(),
   // Uncomment the line below to export to Jaeger (requires Jaeger running locally)
   // traceExporter: new JaegerExporter(),
