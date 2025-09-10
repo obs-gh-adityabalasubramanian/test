@@ -6,9 +6,11 @@ A simple HTTP server built with Express.js and instrumented with OpenTelemetry f
 
 - **Automatic Instrumentation**: HTTP requests, Express routes, and other Node.js modules are automatically instrumented
 - **Custom Spans**: Manual spans for business logic with custom attributes
-- **Error Tracking**: Exceptions and errors are captured in traces
+- **Structured Logging**: JSON-formatted logs with trace correlation for observability platforms
+- **Comprehensive Metrics**: Request latency, throughput, error rates, and business metrics
+- **Error Tracking**: Exceptions and errors are captured in traces with full context
 - **Multiple Endpoints**: Various endpoints demonstrating different instrumentation patterns
-- **Console Export**: Traces are exported to console for easy debugging (can be configured for other exporters)
+- **OTLP Export**: Traces, metrics, and logs are exported via OTLP to observability platforms
 
 ## Endpoints
 
@@ -62,31 +64,50 @@ The server will start on `http://localhost:3000` (or the port specified in the `
 
 ## Configuration
 
-### Exporters
+### OTLP Exporters
 
-The current setup exports traces to the console. To use other exporters:
+The application is configured to export telemetry data via OTLP (OpenTelemetry Protocol) to observability platforms:
 
-1. **Jaeger**: Uncomment the Jaeger exporter in `tracing.js` and ensure Jaeger is running locally
-2. **OTLP**: Add OTLP exporter for sending to observability platforms like Honeycomb, Datadog, etc.
+- **Traces**: Exported to `${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
+- **Metrics**: Exported to `${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics`
+- **Logs**: Exported to `${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs`
 
 ### Environment Variables
 
 - `PORT`: Server port (default: 3000)
-- `OTEL_SERVICE_NAME`: Override service name
-- `OTEL_EXPORTER_*`: Various OpenTelemetry configuration options
+- `OTEL_EXPORTER_OTLP_ENDPOINT`: OTLP endpoint URL (default: http://localhost:4318)
+- `OTEL_EXPORTER_OTLP_BEARER_TOKEN`: Bearer token for authentication (optional)
+- `OTEL_SERVICE_NAME`: Override service name (default: otel-http-server)
+- `NODE_ENV`: Environment (development/production)
 
-## Trace Information
+## Observability Data
 
+### Traces
 Each trace includes:
-- **Automatic attributes**: HTTP method, URL, status code, user agent
-- **Custom attributes**: Business logic identifiers, operation results
-- **Timing information**: Request duration, database operation timing
-- **Error information**: Exception details and error messages
+- **Automatic attributes**: HTTP method, URL, status code, user agent, request ID
+- **Custom attributes**: Business logic identifiers, operation results, validation status
+- **Timing information**: Request duration, database operation timing, health check duration
+- **Error information**: Exception details and error messages with full stack traces
 - **Span hierarchy**: Parent-child relationships between operations
 
-## Next Steps
+### Metrics
+The application collects comprehensive metrics:
+- `http_requests_total`: Total HTTP requests with method, status code, and route labels
+- `http_request_duration_ms`: Request latency histogram
+- `http_requests_in_flight`: Current number of active requests
+- `user_operations_total`: Business operation counters (get_user, create_user)
+- `health_check_duration_ms`: Health check timing
 
-- Add metrics collection with OpenTelemetry metrics
-- Implement distributed tracing across multiple services
-- Add custom instrumentation for external API calls
-- Configure proper observability backend (Jaeger, Zipkin, cloud providers)
+### Logs
+Structured JSON logs with trace correlation:
+- Request/response logging with trace and span IDs
+- Error logging with full context and stack traces
+- Business operation logging (user creation, lookups, validation failures)
+- Server lifecycle events (startup, shutdown)
+
+## Production Deployment
+
+For production use, configure the following environment variables:
+- Set `OTEL_EXPORTER_OTLP_ENDPOINT` to your observability platform's OTLP endpoint
+- Set `OTEL_EXPORTER_OTLP_BEARER_TOKEN` for authentication
+- Set `NODE_ENV=production` for production optimizations
