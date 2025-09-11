@@ -1,4 +1,5 @@
 const { logs, SeverityNumber } = require('@opentelemetry/api-logs');
+const { trace, metrics } = require('@opentelemetry/api');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPLogExporter } = require('@opentelemetry/exporter-logs-otlp-http');
 const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-http');
@@ -125,10 +126,18 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
+// Get instances for export
+const logger = logs.getLogger(serviceName);
+const tracer = trace.getTracer(serviceName, '1.0.0');
+const meter = metrics.getMeter(serviceName, '1.0.0');
+
 // Export for use in other modules
 module.exports = {
   sdk,
   loggerProvider,
+  logger,
+  tracer,
+  meter,
   initOtel,
   shutdownOtel,
 };
