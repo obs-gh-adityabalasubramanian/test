@@ -1,17 +1,12 @@
 // Import tracing first to ensure instrumentation is set up before other imports
-require('./tracing');
+const { logger, tracer, meter } = require('./tracing');
 
 const express = require('express');
-const { trace, context, SpanStatusCode, metrics } = require('@opentelemetry/api');
-const { logs, SeverityNumber } = require('@opentelemetry/api-logs');
+const { trace, context, SpanStatusCode } = require('@opentelemetry/api');
+const { SeverityNumber } = require('@opentelemetry/api-logs');
 
 const app = express();
 const port = process.env.PORT || 3000;
-
-// Get a tracer instance, logger, and meter
-const tracer = trace.getTracer('http-server', '1.0.0');
-const logger = logs.getLogger('http-server');
-const meter = metrics.getMeter('http-server', '1.0.0');
 
 // Initialize metrics
 const httpRequestsTotal = meter.createCounter('http_requests_total', {
