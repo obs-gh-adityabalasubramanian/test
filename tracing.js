@@ -17,7 +17,7 @@ const otlpEndpointBearerToken = process.env.OTEL_EXPORTER_OTLP_BEARER_TOKEN;
 
 const authHeader = otlpEndpointBearerToken
   ? { Authorization: `Bearer ${otlpEndpointBearerToken}` }
-  : {};
+  : null;
 
 // Create resource
 const resource = resourceFromAttributes({
@@ -32,7 +32,7 @@ const loggerProvider = new LoggerProvider({
       new OTLPLogExporter({
         url: `${otlpEndpoint}/v1/logs`,
         headers: {
-          ...authHeader,
+          ...(authHeader || {}),
           'x-observe-target-package': 'Logs',
         },
       })
@@ -46,7 +46,7 @@ const sdk = new NodeSDK({
   traceExporter: new OTLPTraceExporter({
     url: `${otlpEndpoint}/v1/traces`,
     headers: {
-      ...authHeader,
+      ...(authHeader || {}),
       'x-observe-target-package': 'Tracing',
     },
   }),
@@ -54,7 +54,7 @@ const sdk = new NodeSDK({
     exporter: new OTLPMetricExporter({
       url: `${otlpEndpoint}/v1/metrics`,
       headers: {
-        ...authHeader,
+        ...(authHeader || {}),
         'x-observe-target-package': 'Metrics',
       },
     }),
