@@ -6,7 +6,7 @@ const { trace, context, SpanStatusCode, metrics } = require('@opentelemetry/api'
 const { logs, SeverityNumber } = require('@opentelemetry/api-logs');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 // Get a tracer instance, logger, and meter
 const tracer = trace.getTracer('http-server', '1.0.0');

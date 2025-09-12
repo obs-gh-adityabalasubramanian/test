@@ -1,3 +1,6 @@
+// Load environment variables from .env file
+require('dotenv').config();
+
 const { logs, SeverityNumber } = require('@opentelemetry/api-logs');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPLogExporter } = require('@opentelemetry/exporter-logs-otlp-http');

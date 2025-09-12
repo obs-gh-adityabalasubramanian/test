@@ -29,7 +29,7 @@ npm install
 npm start
 ```
 
-The server will start on `http://localhost:3000` (or the port specified in the `PORT` environment variable).
+The server will start on `http://localhost:3001` (or the port specified in the `PORT` environment variable).
 
 ## Testing the Instrumentation
 
@@ -41,21 +41,21 @@ The server will start on `http://localhost:3000` (or the port specified in the `
 2. Make some requests:
    ```bash
    # Basic request
-   curl http://localhost:3000/
+   curl http://localhost:3001/
 
    # Health check
-   curl http://localhost:3000/health
+   curl http://localhost:3001/health
 
    # Get user
-   curl http://localhost:3000/api/users/123
+   curl http://localhost:3001/api/users/123
 
    # Create user
-   curl -X POST http://localhost:3000/api/users \
+   curl -X POST http://localhost:3001/api/users \
      -H "Content-Type: application/json" \
      -d '{"name": "John Doe", "email": "john@example.com"}'
 
    # Test error case
-   curl http://localhost:3000/api/users/404
+   curl http://localhost:3001/api/users/404
    ```
 
 3. Check the console output to see the OpenTelemetry traces with spans, attributes, and timing information.
@@ -71,7 +71,7 @@ The current setup exports traces to the console. To use other exporters:
 
 ### Environment Variables
 
-- `PORT`: Server port (default: 3000)
+- `PORT`: Server port (default: 3001)
 - `OTEL_SERVICE_NAME`: Override service name
 - `OTEL_EXPORTER_*`: Various OpenTelemetry configuration options
 
